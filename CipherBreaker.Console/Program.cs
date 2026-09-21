@@ -12,8 +12,9 @@ public class Program
             Console.WriteLine();
             Console.WriteLine(" 1. Caesar solver (brute force + chi-squared scoring)");
             Console.WriteLine(" 2. Simple substitution solver (hill-climbing + bigram scoring)");
-            Console.WriteLine(" 3. Analyse text (letter frequencies, chi-squared, index of coincidence)");
-            Console.WriteLine(" 4. Exit");
+            Console.WriteLine(" 3. Vigenere solver (Kasiski + Index of Coincidence + Caesar solver)");
+            Console.WriteLine(" 4. Analyse text (letter frequencies, chi-squared, index of coincidence)");
+            Console.WriteLine(" 5. Exit");
             Console.Write("\nEnter your choice: ");
 
             string choice = (Console.ReadLine() ?? "").Trim();
@@ -22,8 +23,9 @@ public class Program
             {
                 case "1": RunCaesarSolver(); break;
                 case "2": RunSimpleSubstitutionSolver(); break;
-                case "3": RunFrequencyAnalysis(); break;
-                case "4": Console.WriteLine("Exiting program. Goodbye!"); return;
+                case "3": RunVigenereSolver(); break;
+                case "4": RunFrequencyAnalysis(); break;
+                case "5": Console.WriteLine("Exiting program. Goodbye!"); return;
                 default: Console.WriteLine("Invalid choice."); break;
             }
 
@@ -69,6 +71,23 @@ public class Program
 
         Console.WriteLine($"\nBest key found: {result.Key}");
         Console.WriteLine($"Score: {result.Score:F2}");
+        Console.WriteLine($"\nRecovered plaintext:\n{result.Plaintext}");
+    }
+
+    private static void RunVigenereSolver()
+    {
+        Console.WriteLine("\n--- Vigenere Solver ---");
+        Console.WriteLine("No key needed: estimates the key length from repeated sequences");
+        Console.WriteLine("(Kasiski) and column statistics (Index of Coincidence), then attacks");
+        Console.WriteLine("each key position as its own Caesar cipher. Works best with at least a");
+        Console.WriteLine("few hundred letters, since key-length estimation needs enough repeats.");
+        Console.Write("\nEnter ciphertext: ");
+        string cipherText = Console.ReadLine() ?? "";
+
+        var result = VigenereSolver.Solve(cipherText);
+
+        Console.WriteLine($"\nKey length found: {result.KeyLength}");
+        Console.WriteLine($"Key: {result.Key}");
         Console.WriteLine($"\nRecovered plaintext:\n{result.Plaintext}");
     }
 

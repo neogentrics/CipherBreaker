@@ -38,6 +38,14 @@ duplicated — CipherBreaker's job is exclusively the *attacking* half.
   Jane Austen's *Pride and Prejudice*, not a remembered frequency table), with many random restarts
   to escape wrong local optima. Verified against genuinely held-out text — a different author,
   Arthur Conan Doyle — with zero key given: exact recovery, 1,663 characters, in under 2 seconds.
+* **Vigenère Solver** — three centuries of "le chiffre indéchiffrable" fell to two techniques,
+  both reused here: **Kasiski examination** (1863) finds repeated ciphertext sequences and votes on
+  key lengths from the distances between them; **Index of Coincidence** (Friedman, 1922) confirms
+  the estimate statistically, since the correct key length is the one whose columns each look like
+  plain English. Once the length is known, every column of the ciphertext is exactly a Caesar
+  cipher — so **the existing Caesar Solver is reused unchanged**, one call per key position, to
+  recover the whole key. Verified on the same held-out Conan Doyle text with five different keys
+  (3 to 13 letters): exact key and exact plaintext recovered every time, with zero key given.
 
 ---
 
@@ -46,7 +54,7 @@ duplicated — CipherBreaker's job is exclusively the *attacking* half.
 * [x] Frequency analysis infrastructure (chi-squared, Index of Coincidence)
 * [x] Caesar cipher solver (exhaustive search)
 * [x] Simple substitution solver (hill-climbing over a corpus-trained bigram model)
-* [ ] Vigenère: Kasiski examination (key-length detection) and Index-of-Coincidence-based attacks
+* [x] Vigenère solver (Kasiski + Index of Coincidence for key length, Caesar solver per position)
 * [ ] Known-plaintext attack against the Hill cipher (linear algebra recovers the key matrix directly)
 * [ ] Affine cipher solver (small keyspace, same exhaustive-search approach as Caesar)
 * [ ] Bombe-style attack against the Enigma simulator already implemented in CryptoPortfolio
