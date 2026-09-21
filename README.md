@@ -46,6 +46,17 @@ duplicated — CipherBreaker's job is exclusively the *attacking* half.
   cipher — so **the existing Caesar Solver is reused unchanged**, one call per key position, to
   recover the whole key. Verified on the same held-out Conan Doyle text with five different keys
   (3 to 13 letters): exact key and exact plaintext recovered every time, with zero key given.
+* **Hill Known-Plaintext Attack** — a genuinely different attack model from everything above: not
+  ciphertext-only, but a **crib** (plaintext you know or suspect appears in the message, position
+  unknown). Given two independent plaintext digraphs and their matching ciphertext, the 2x2 key
+  matrix K isn't merely likely, it's *uniquely determined*: K = C x P^-1 (mod 26). This is exact
+  linear algebra, not a statistical guess — no hill-climbing, nothing probabilistic. What's
+  genuinely searched is the alignment, since a crib can only line up with Hill's fixed two-letter
+  blocks at an even offset. Verified against real ciphertext with an unknown key: exact key and
+  plaintext recovered instantly, crib position found automatically. One real bug caught while
+  verifying it: pairing a crib's *first* digraph with each later one fails outright whenever that
+  first digraph's own letters are both even-valued (their column vector forces every determinant
+  even) — fixed by trying every pair of digraphs in the crib, not just those anchored to the first.
 
 ---
 
@@ -55,7 +66,7 @@ duplicated — CipherBreaker's job is exclusively the *attacking* half.
 * [x] Caesar cipher solver (exhaustive search)
 * [x] Simple substitution solver (hill-climbing over a corpus-trained bigram model)
 * [x] Vigenère solver (Kasiski + Index of Coincidence for key length, Caesar solver per position)
-* [ ] Known-plaintext attack against the Hill cipher (linear algebra recovers the key matrix directly)
+* [x] Known-plaintext attack against the Hill cipher (exact linear algebra, crib alignment unknown)
 * [ ] Affine cipher solver (small keyspace, same exhaustive-search approach as Caesar)
 * [ ] Bombe-style attack against the Enigma simulator already implemented in CryptoPortfolio
 

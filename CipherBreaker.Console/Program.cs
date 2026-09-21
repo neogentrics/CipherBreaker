@@ -13,8 +13,9 @@ public class Program
             Console.WriteLine(" 1. Caesar solver (brute force + chi-squared scoring)");
             Console.WriteLine(" 2. Simple substitution solver (hill-climbing + bigram scoring)");
             Console.WriteLine(" 3. Vigenere solver (Kasiski + Index of Coincidence + Caesar solver)");
-            Console.WriteLine(" 4. Analyse text (letter frequencies, chi-squared, index of coincidence)");
-            Console.WriteLine(" 5. Exit");
+            Console.WriteLine(" 4. Hill known-plaintext attack (exact linear algebra)");
+            Console.WriteLine(" 5. Analyse text (letter frequencies, chi-squared, index of coincidence)");
+            Console.WriteLine(" 6. Exit");
             Console.Write("\nEnter your choice: ");
 
             string choice = (Console.ReadLine() ?? "").Trim();
@@ -24,8 +25,9 @@ public class Program
                 case "1": RunCaesarSolver(); break;
                 case "2": RunSimpleSubstitutionSolver(); break;
                 case "3": RunVigenereSolver(); break;
-                case "4": RunFrequencyAnalysis(); break;
-                case "5": Console.WriteLine("Exiting program. Goodbye!"); return;
+                case "4": RunHillKnownPlaintextAttack(); break;
+                case "5": RunFrequencyAnalysis(); break;
+                case "6": Console.WriteLine("Exiting program. Goodbye!"); return;
                 default: Console.WriteLine("Invalid choice."); break;
             }
 
@@ -89,6 +91,31 @@ public class Program
         Console.WriteLine($"\nKey length found: {result.KeyLength}");
         Console.WriteLine($"Key: {result.Key}");
         Console.WriteLine($"\nRecovered plaintext:\n{result.Plaintext}");
+    }
+
+    private static void RunHillKnownPlaintextAttack()
+    {
+        Console.WriteLine("\n--- Hill Known-Plaintext Attack ---");
+        Console.WriteLine("Different from every other solver here: this needs a CRIB, not just");
+        Console.WriteLine("ciphertext - plaintext you know or suspect appears somewhere in the");
+        Console.WriteLine("message. You don't need to know WHERE; at least 4 letters of crib are");
+        Console.WriteLine("needed, and this is exact linear algebra, not a statistical guess.");
+        Console.Write("\nEnter ciphertext: ");
+        string cipherText = Console.ReadLine() ?? "";
+        Console.Write("Enter known/suspected plaintext (the crib): ");
+        string crib = Console.ReadLine() ?? "";
+
+        var result = HillKnownPlaintextAttack.Recover(cipherText, crib);
+
+        if (!result.Success)
+        {
+            Console.WriteLine($"\nNo key recovered: {result.Error}");
+            return;
+        }
+
+        Console.WriteLine($"\nKey recovered: {result.Key}");
+        Console.WriteLine($"Crib found at letter offset: {result.PlaintextOffset}");
+        Console.WriteLine($"\nFull plaintext:\n{result.Plaintext}");
     }
 
     private static void RunFrequencyAnalysis()
