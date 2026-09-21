@@ -11,8 +11,9 @@ public class Program
             Console.WriteLine("Attacks that recover a key or plaintext WITHOUT being told the key.");
             Console.WriteLine();
             Console.WriteLine(" 1. Caesar solver (brute force + chi-squared scoring)");
-            Console.WriteLine(" 2. Analyse text (letter frequencies, chi-squared, index of coincidence)");
-            Console.WriteLine(" 3. Exit");
+            Console.WriteLine(" 2. Simple substitution solver (hill-climbing + bigram scoring)");
+            Console.WriteLine(" 3. Analyse text (letter frequencies, chi-squared, index of coincidence)");
+            Console.WriteLine(" 4. Exit");
             Console.Write("\nEnter your choice: ");
 
             string choice = (Console.ReadLine() ?? "").Trim();
@@ -20,8 +21,9 @@ public class Program
             switch (choice)
             {
                 case "1": RunCaesarSolver(); break;
-                case "2": RunFrequencyAnalysis(); break;
-                case "3": Console.WriteLine("Exiting program. Goodbye!"); return;
+                case "2": RunSimpleSubstitutionSolver(); break;
+                case "3": RunFrequencyAnalysis(); break;
+                case "4": Console.WriteLine("Exiting program. Goodbye!"); return;
                 default: Console.WriteLine("Invalid choice."); break;
             }
 
@@ -50,6 +52,24 @@ public class Program
 
         var best = ranked[0];
         Console.WriteLine($"\nBest guess: shift {best.Shift} -> {best.Plaintext}");
+    }
+
+    private static void RunSimpleSubstitutionSolver()
+    {
+        Console.WriteLine("\n--- Simple Substitution Solver ---");
+        Console.WriteLine("No key needed: hill-climbs a 26-letter key against real English bigram");
+        Console.WriteLine("statistics. Works best with a few hundred letters or more; short messages");
+        Console.WriteLine("may leave the rarest letters (J, Q, X, Z) ambiguous even when everything");
+        Console.WriteLine("else resolves correctly - that is a genuine statistical limit, not a bug.");
+        Console.Write("\nEnter ciphertext: ");
+        string cipherText = Console.ReadLine() ?? "";
+
+        Console.WriteLine("Searching (this can take a few seconds for longer messages)...");
+        var result = SimpleSubstitutionSolver.Solve(cipherText);
+
+        Console.WriteLine($"\nBest key found: {result.Key}");
+        Console.WriteLine($"Score: {result.Score:F2}");
+        Console.WriteLine($"\nRecovered plaintext:\n{result.Plaintext}");
     }
 
     private static void RunFrequencyAnalysis()
