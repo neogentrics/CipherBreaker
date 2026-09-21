@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="CipherBreaker.Console/CipherBreaker.Console.csproj" />
+  <Project Path="CipherBreaker.Core/CipherBreaker.Core.csproj" />
+  <Project Path="CipherBreaker.Tests/CipherBreaker.Tests.csproj" />
+</Solution>
